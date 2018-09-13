@@ -5,9 +5,7 @@
 #include "WavTools.h"
 
 
-WavTools::WavTools() {
-
-}
+WavTools::WavTools() = default;
 
 WavTools::~WavTools() {
 //    delete wavHeader;
@@ -21,37 +19,6 @@ WavHeader *WavTools::getInfoFromFIle(FILE *file) {
     return wavHeader;
 }
 
-void WavTools::getInfoFromStream(WavHeader *header, std::ifstream *instream) {
-    if (instream->is_open()) {
-        instream->seekg(0, std::ios::beg);
-        instream->read((char *) header, sizeof(WavHeader));
-
-        std::cout << "The header :"
-                  << header->riff
-                  << "\nchunk_size:"
-                  << header->chunk_size << "\nformat:"
-                  << header->format << std::endl;
-        std::cout << "The fmtChunk :"
-                  << header->fmtChunk.fmt
-                  << "\nchunk_size:"
-                  << header->fmtChunk.chunk_size
-                  << "\nformat:"
-                  << ((header->fmtChunk.audio_format) == 1 ? "PCM" : "OTHER")
-                  << "\nnumber of channels:"
-                  << header->fmtChunk.num_channels
-                  << "\nsample_rate:"
-                  << header->fmtChunk.sample_rate
-                  << std::endl;
-
-        std::cout << "The dataChunk:"
-                  << header->dataChunk.data
-                  << "\nchunk_size:"
-                  << header->dataChunk.chunk_size
-                  << std::endl;
-    } else {
-        std::cout << "there is no file" << std::endl;
-    }
-}
 
 int WavTools::writeWavInfoToFile(std::ofstream *outstream, WavHeader *header) {
     if (!outstream->is_open()) {
@@ -64,7 +31,7 @@ int WavTools::writeWavInfoToFile(std::ofstream *outstream, WavHeader *header) {
     return 0;
 }
 
-int WavTools::getWavFormat(std::ifstream *in_stream, FmtChunk *fmtChunk) {
+int WavTools::getWavFormat(std::ifstream *in_stream, FmtChunk *fmtChunk, bool show) {
     if (!in_stream->is_open()) {
         std::cout << "the stream is null" << std::endl;
         return -1;
@@ -87,23 +54,8 @@ int WavTools::getWavFormat(std::ifstream *in_stream, FmtChunk *fmtChunk) {
         } else {
             in_stream->seekg(-4, std::ios::cur);
             in_stream->read((char *) fmtChunk, sizeof(FmtChunk));
-            std::cout << "The fmtChunk :"
-                      << fmtChunk->fmt
-                      << "\nchunk_size:"
-                      << fmtChunk->chunk_size
-                      << "\nformat:"
-                      << ((fmtChunk->audio_format) == 1 ? "PCM" : "OTHER")
-                      << "\nnumber of channels:"
-                      << fmtChunk->num_channels
-                      << "\nsample_rate:"
-                      << fmtChunk->sample_rate
-                      << "\nbyte_rate:"
-                      << fmtChunk->byte_rate
-                      << "\nblock_align:"
-                      << fmtChunk->block_align
-                      << "\nbit_per_sample:"
-                      << fmtChunk->bit_per_sample
-                      << std::endl;
+            if (show)
+                printWAVInfo(fmtChunk);
             break;
         }
 
@@ -146,4 +98,17 @@ int WavTools::seekToRealData(std::ifstream *in_stream) {
 
     }
     return STATE_SUCCESS;
+}
+
+void WavTools::printWAVInfo(FmtChunk *fmtChunk) {
+    if (strcmp(fmtChunk->fmt, FMT) == 0) {
+        std::cerr << "FormatChunk is not correct" << std::endl;
+        return;
+    }
+    std::cout << "\nAudio Format    : " << ((fmtChunk->audio_format == 1) ? "PCM" : "OTHER")
+              << "\nAudio Channels  : " << fmtChunk->num_channels
+              << "\nBit PerSample   : " << fmtChunk->bit_per_sample
+              << "\nSample Rate     : " << fmtChunk->sample_rate
+              << "\nByte Rate       : " << fmtChunk->byte_rate << std::endl;
+
 }

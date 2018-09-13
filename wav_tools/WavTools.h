@@ -16,6 +16,9 @@ const char WAVE[] = "WAVE";
 const char FMT[] = "fmt ";
 const char DATA[] = "data";
 
+/**
+ * 格式
+ */
 struct FmtChunk {
     char fmt[4];
     uint32_t chunk_size;
@@ -45,13 +48,15 @@ public:
 
     ~WavTools();
 
-    WavHeader *getWaveHeader();
-
     WavHeader *getInfoFromFIle(FILE *file);
 
-    int getWavFormat(std::ifstream *in_stream, FmtChunk *fmtChunk);
-
-    void getInfoFromStream(WavHeader *wavHeader, std::ifstream *instream);
+    /**
+     * 获取格式信息
+     * @param in_stream 读取文件流
+     * @param fmtChunk  文件格式结构体，将会被填满
+     * @return 读取成功返回 #STATE_SUCCESS，读取失败返回#STATE_ERR_NOT_WAV
+     */
+    int getWavFormat(std::ifstream *in_stream, FmtChunk *fmtChunk, bool show);
 
     int writeWavInfoToFile(std::ofstream *outstream, WavHeader *header);
 
@@ -60,6 +65,11 @@ public:
 private:
     WavHeader *wavHeader;
     uint32_t chunk_size;
+
+    /*
+     * 输出格式信息
+     */
+    void printWAVInfo(FmtChunk *fmtChunk);
 };
 
 

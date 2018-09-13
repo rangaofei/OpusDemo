@@ -19,7 +19,7 @@ int main() {
     auto *wavTools = new WavTools();
     OpusEncoder *enc;
     OpusDecoder *dec;
-    uint8_t host[] = {192, 168, 1, 5};
+    uint8_t host[] = {192, 168, 16, 65};
     RTPHelper rtpHelper(host, 8006);
     enc = opus_encoder_create(48000, channels, OPUS_APPLICATION_VOIP, &error);
     if (error != OPUS_OK) {
@@ -44,7 +44,7 @@ int main() {
         return 0;
     }
     auto *fmtChunk = static_cast<FmtChunk *>(malloc(sizeof(FmtChunk)));
-    wavTools->getWavFormat(&in_stream, fmtChunk);
+    wavTools->getWavFormat(&in_stream, fmtChunk, true);
     wavTools->seekToRealData(&in_stream);
 //    return 0;
 //    in_stream.seekg(0, ios::beg);
