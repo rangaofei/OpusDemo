@@ -41,7 +41,7 @@ void RTPHelper::destroyRTPSession() {
 }
 
 RTPHelper::RTPHelper(uint8_t *hostIP, uint16_t port = 8006) {
-    sessionParams.SetOwnTimestampUnit(1.0 / 90000.0);
+    sessionParams.SetOwnTimestampUnit(1.0 / 48000.0);
     sessionParams.SetAcceptOwnPackets(true);
     sessionParams.SetUsePredefinedSSRC(true);
     transmissionParams.SetPortbase(8004);
@@ -52,8 +52,8 @@ RTPHelper::RTPHelper(uint8_t *hostIP, uint16_t port = 8006) {
     checkError(status);
     rtpSession.SetDefaultMark(true);
     rtpSession.SetDefaultPayloadType(OPUS);
-    rtpSession.SetTimestampUnit(1.0 / 90000.0);
-    rtpSession.SetDefaultTimestampIncrement(3600);
+    rtpSession.SetTimestampUnit(1.0 / 48000.0);
+    rtpSession.SetDefaultTimestampIncrement(960);
     memset(sendBuf, 0, RTP_PACKET_MAX_LENGTH + 3);
 }
 

@@ -9,6 +9,7 @@
 #include <jrtplib3/rtppacket.h>
 #include <jrtplib3/rtpudpv4transmitter.h>
 #include <fstream>
+#include "openal_tools/OpenAlHelper.h"
 
 using namespace jrtplib;
 
@@ -56,7 +57,9 @@ int main() {
     OpusDecoder *dec;
     dec = opus_decoder_create(48000, 1, &err);
 
-
+    auto *openAlHelper = new OpenAlHelper();
+    openAlHelper->showAllDevice();
+    openAlHelper->openDevice();
     while (true) {
         session.BeginDataAccess();
 
@@ -72,13 +75,13 @@ int main() {
                                         pcmData, 2000, 0);
                     //处理数据
                     cout << "decode data is " << frameSize << endl;
-
-                    fstream outfile("../data.wav", ios::app | ios::binary);
-                    if (!outfile) {
-                        cout << "创建文件错误" << endl;
-                    }
-                    outfile.write(reinterpret_cast<const char *>(pcmData), frameSize * 2);
-                    outfile.close();
+                    openAlHelper->play(reinterpret_cast<char *>(pcmData), frameSize*2);
+//                    fstream outfile("../data.wav", ios::app | ios::binary);
+//                    if (!outfile) {
+//                        cout << "创建文件错误" << endl;
+//                    }
+//                    outfile.write(reinterpret_cast<const char *>(pcmData), frameSize * 2);
+//                    outfile.close();
                     session.DeletePacket(rtpPacket);
                 }
             } while (session.GotoNextSourceWithData());
