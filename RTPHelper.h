@@ -8,10 +8,11 @@
 #include <jrtplib3/rtpsession.h>
 #include <jrtplib3/rtpsessionparams.h>
 #include <jrtplib3/rtpudpv4transmitter.h>
+#include "SakaAndroidTime.h"
 
-#define OPUS 101
-
+//MTU
 #define RTP_PACKET_MAX_LENGTH 1400
+
 using namespace jrtplib;
 
 class RTPHelper {

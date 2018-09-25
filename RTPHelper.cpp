@@ -53,7 +53,7 @@ RTPHelper::RTPHelper(uint8_t *hostIP, uint16_t port = 8006) {
     rtpSession.SetDefaultMark(true);
     rtpSession.SetDefaultPayloadType(OPUS);
     rtpSession.SetTimestampUnit(1.0 / 48000.0);
-    rtpSession.SetDefaultTimestampIncrement(960);
+    rtpSession.SetDefaultTimestampIncrement(960*2);
     memset(sendBuf, 0, RTP_PACKET_MAX_LENGTH + 3);
 }
 

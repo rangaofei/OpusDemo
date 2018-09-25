@@ -4,11 +4,12 @@
 #include "RTPHelper.h"
 #include "wav_tools/WavTools.h"
 #include <opus/opus.h>
+#include <zconf.h>
 
 
 //TODO 重采样
 using namespace std;
-const int frame_size = 960;
+const int frame_size = 960 * 2;
 const int channels = 1;
 
 int main() {
@@ -21,7 +22,7 @@ int main() {
     auto *wavTools = new WavTools();
     OpusEncoder *enc;
     OpusDecoder *dec;
-    uint8_t host[] = {192, 168, 1, 7};
+    uint8_t host[] = {192, 168, 16, 98};
     RTPHelper rtpHelper(host, 8006);
     enc = opus_encoder_create(48000, channels, OPUS_APPLICATION_VOIP, &error);
     if (error != OPUS_OK) {

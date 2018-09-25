@@ -6,12 +6,15 @@
 #define OPUSDEMO_OPENALHELPER_H
 
 #include <OpenAL/OpenAL.h>
+#include <opus/opus.h>
 #include "../wav_tools/WavTools.h"
+#include "SyncQueue.h"
 
 class OpenAlHelper {
 
 public:
-    const ALsizei BUFFER_NUM = 1024 * 2;
+    static const int BUFFER_NUM = 100;
+    static const int BUFFER_SIZE = 960 * 4;
 
     void showAllDevice();
 
@@ -19,24 +22,36 @@ public:
 
     OpenAlHelper();
 
-    void play(char *data,int length);
+    void play(SyncQueue<OpusBody *> *queue);
 
 private:
     const ALchar *devices;
     const ALchar *defaultDevice;
+
     ALCdevice *device;
     ALCcontext *context;
+    FmtChunk *fmtChunk;
     ALboolean g_bEAX;
-    ALenum error;
-    ALuint g_Buffers[1024 * 2];
 
-    char pcmData[1024 * 1024 * 20];
+    int bufferSize = 0;
+    int status = -100;
+
+    ALenum error;
+    ALuint g_Buffers[BUFFER_NUM];
+
+    opus_int16 pcmData[4000];
+
+    uint8_t tmpData[BUFFER_SIZE];
 
     ALuint source;
     int data_length;
     int freq;
 
-    void checkError();
+    OpusDecoder *decSaka;
+
+    int checkError(const char *msg);
+
+    void fillBuffer(ALuint index, uint8_t *buf, uint32_t len);
 
 
 };
