@@ -13,7 +13,6 @@ void OpenAlHelper::showAllDevice() {
         cout << "Devices:" << devices
              << "\nDefault Device:" << defaultDevice << endl;
     }
-
 }
 
 void OpenAlHelper::openDevice() {
