@@ -48,7 +48,6 @@ public:
 
     ~WavTools();
 
-    WavHeader *getInfoFromFIle(FILE *file);
 
     /**
      * 获取格式信息
@@ -58,18 +57,26 @@ public:
      */
     int getWavFormat(std::ifstream *in_stream, FmtChunk *fmtChunk, bool show);
 
-    int writeWavInfoToFile(std::ofstream *outstream, WavHeader *header);
+    int writeWavInfoToFile(std::ofstream *out_stream, WavHeader *header);
 
+    /**
+     * 将指针移动到PCM数据开始的地方
+     * @param in_stream 读取文件流
+     * @return 读取成功返回 #STATE_SUCCESS，读取失败返回#STATE_ERR_NOT_WAV
+     */
     int seekToRealData(std::ifstream *in_stream);
 
 private:
-    WavHeader *wavHeader;
     uint32_t chunk_size;
 
     /*
-     * 输出格式信息
+     * 输出FMT格式信息
      */
-    void printWAVInfo(FmtChunk *fmtChunk);
+    void printWAVFmtChunk(FmtChunk *fmtChunk);
+
+    void printWAVHeader(WavHeader *wavHeader);
+
+    void printWAVDataChunk(DataChunk *dataChunk);
 };
 
 

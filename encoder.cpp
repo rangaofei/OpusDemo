@@ -22,7 +22,7 @@ int main() {
     auto *wavTools = new WavTools();
     OpusEncoder *enc;
     OpusDecoder *dec;
-    uint8_t host[] = {192, 168, 16, 98};
+    uint8_t host[] = {192, 168, 1, 8};
     RTPHelper rtpHelper(host, 8006);
     enc = opus_encoder_create(48000, channels, OPUS_APPLICATION_VOIP, &error);
     if (error != OPUS_OK) {

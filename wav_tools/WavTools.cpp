@@ -11,14 +11,6 @@ WavTools::~WavTools() {
 //    delete wavHeader;
 }
 
-WavHeader *WavTools::getInfoFromFIle(FILE *file) {
-    wavHeader = (WavHeader *) malloc(sizeof(wavHeader));
-    if (file) {
-
-    }
-    return wavHeader;
-}
-
 
 int WavTools::writeWavInfoToFile(std::ofstream *outstream, WavHeader *header) {
     if (!outstream->is_open()) {
@@ -55,7 +47,7 @@ int WavTools::getWavFormat(std::ifstream *in_stream, FmtChunk *fmtChunk, bool sh
             in_stream->seekg(-4, std::ios::cur);
             in_stream->read((char *) fmtChunk, sizeof(FmtChunk));
             if (show)
-                printWAVInfo(fmtChunk);
+                printWAVFmtChunk(fmtChunk);
             break;
         }
 
@@ -100,8 +92,8 @@ int WavTools::seekToRealData(std::ifstream *in_stream) {
     return STATE_SUCCESS;
 }
 
-void WavTools::printWAVInfo(FmtChunk *fmtChunk) {
-    if (strcmp(fmtChunk->fmt, FMT) == 0) {
+void WavTools::printWAVFmtChunk(FmtChunk *fmtChunk) {
+    if (strcmp(fmtChunk->fmt, FMT) != 0) {
         std::cerr << "FormatChunk is not correct" << std::endl;
         return;
     }
@@ -111,4 +103,23 @@ void WavTools::printWAVInfo(FmtChunk *fmtChunk) {
               << "\nSample Rate     : " << fmtChunk->sample_rate
               << "\nByte Rate       : " << fmtChunk->byte_rate << std::endl;
 
+}
+
+void WavTools::printWAVHeader(WavHeader *wavHeader) {
+    if (strcmp(wavHeader->riff, RIFF) != 0) {
+        std::cerr << "Is not a wav file" << std::endl;
+        return;
+    }
+    if (&wavHeader->fmtChunk != nullptr)
+        printWAVFmtChunk(&wavHeader->fmtChunk);
+    if (&wavHeader->dataChunk != nullptr)
+        printWAVDataChunk(&wavHeader->dataChunk);
+}
+
+void WavTools::printWAVDataChunk(DataChunk *dataChunk) {
+    if (strcmp(dataChunk->data, DATA) != 0) {
+        std::cerr << "Is not dataChunk!" << std::endl;
+        return;
+    }
+    std::cout << "PCM Length        :" << dataChunk->chunk_size << std::endl;
 }
